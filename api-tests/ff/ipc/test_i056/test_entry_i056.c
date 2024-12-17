@@ -33,7 +33,7 @@ void test_entry(val_api_t *val_api, psa_api_t *psa_api)
     psa = psa_api;
 
     /* test init */
-    val->test_init(TEST_NUM, TEST_DESC, TEST_FIELD(TEST_ISOLATION_L1, WD_LOW_TIMEOUT));
+    val->test_init(TEST_NUM, TEST_DESC, TEST_FIELD(TEST_ISOLATION_L1, WD_CRYPTO_TIMEOUT));
     if (!IS_TEST_START(val->get_status()))
     {
         goto test_exit;

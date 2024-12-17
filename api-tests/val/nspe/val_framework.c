@@ -118,6 +118,7 @@ val_status_t val_execute_non_secure_tests(uint32_t test_num, const client_test_t
 #endif
 
     status = val_get_boot_flag(&boot.state);
+    val_print(PRINT_ALWAYS, "val_get_boot_flag():%d\n", status);
     if (VAL_ERROR(status))
     {
        val_set_status(RESULT_FAIL(status));
@@ -138,14 +139,14 @@ val_status_t val_execute_non_secure_tests(uint32_t test_num, const client_test_t
 
             if ((boot.state ==  BOOT_EXPECTED_REENTER_TEST) && (i == 1))
             {
-                val_print(PRINT_DEBUG, "[Check 1] PASSED\n", 0);
+                val_print(PRINT_ALWAYS, "[Check 1] PASSED\n", 0);
                 i++;
                 continue;
             }
 
             if ((boot.state ==  BOOT_EXPECTED_ON_SECOND_CHECK) && (i == 1))
             {
-                val_print(PRINT_DEBUG, "[Check 2] PASSED\n", 0);
+                val_print(PRINT_ALWAYS, "[Check 2] PASSED\n", 0);
                 i = i + 2 ;
                 continue;
             }
@@ -153,6 +154,7 @@ val_status_t val_execute_non_secure_tests(uint32_t test_num, const client_test_t
             if (boot.state != BOOT_EXPECTED_CONT_TEST_EXEC)
             {
                 status = val_set_boot_flag(BOOT_NOT_EXPECTED);
+                val_print(PRINT_ALWAYS, "val_set_boot_flag:%d\n", status);
                 if (VAL_ERROR(status))
                 {
                     return status;
@@ -160,7 +162,7 @@ val_status_t val_execute_non_secure_tests(uint32_t test_num, const client_test_t
             }
 
             if (i == 1)
-                val_print(PRINT_TEST,"[Info] Executing tests from non-secure\n", 0);
+                val_print(PRINT_ALWAYS,"[Info] Executing tests from non-secure\n", 0);
 #ifdef IPC
             if (server_hs == TRUE)
             {
@@ -174,20 +176,22 @@ val_status_t val_execute_non_secure_tests(uint32_t test_num, const client_test_t
                 status = val_execute_secure_test_func(&handle, test_info,
                                                 SERVER_TEST_DISPATCHER_SID);
 #endif
+                val_print(PRINT_ALWAYS, "val_execute_secure_test_func:%d\n", status);
                 if (VAL_ERROR(status))
                 {
                     val_set_status(RESULT_FAIL(status));
-                    val_print(PRINT_DEBUG, "[Check %d] START\n", i);
+                    val_print(PRINT_ALWAYS, "[Check %d] START\n", i);
                     return status;
                 }
                 else
                 {
-                    val_print(PRINT_DEBUG, "[Check %d] START\n", i);
+                    val_print(PRINT_ALWAYS, "[Check %d] START\n", i);
                 }
             }
 #endif
             /* keep track of the test block numbers, helps when the panic happened */
         	status = val_set_test_data(NV_TEST_DATA2, i);
+            val_print(PRINT_ALWAYS, "val_set_test_data():%d\n", status);
             /* Execute client tests */
             test_status = tests_list[i](CALLER_NONSECURE);
 #ifdef IPC
@@ -195,6 +199,7 @@ val_status_t val_execute_non_secure_tests(uint32_t test_num, const client_test_t
             {
                 /* Retrive Server test status */
                 status = val_get_secure_test_result(&handle);
+                val_print(PRINT_ALWAYS, "val_get_secure_test_result():%d\n", status);
             }
 #endif
             status = test_status ? test_status:status;
@@ -202,21 +207,21 @@ val_status_t val_execute_non_secure_tests(uint32_t test_num, const client_test_t
             {
                 val_set_status(status);
                 if (server_hs == TRUE)
-                    val_print(PRINT_DEBUG, "[Check %d] SKIPPED\n", i);
+                    val_print(PRINT_ALWAYS, "[Check %d] SKIPPED\n", i);
                 return status;
             }
             else if (VAL_ERROR(status))
             {
                 val_set_status(RESULT_FAIL(status));
                 if (server_hs == TRUE)
-                    val_print(PRINT_DEBUG, "[Check %d] FAILED\n", i);
+                    val_print(PRINT_ALWAYS, "[Check %d] FAILED\n", i);
 
                 return status;
             }
             else
             {
                 if (server_hs == TRUE)
-                    val_print(PRINT_DEBUG, "[Check %d] PASSED\n", i);
+                    val_print(PRINT_ALWAYS, "[Check %d] PASSED\n", i);
             }
 
             i++;
@@ -228,7 +233,7 @@ val_status_t val_execute_non_secure_tests(uint32_t test_num, const client_test_t
        status = VAL_STATUS_SUCCESS;
        if (boot.state != BOOT_EXPECTED_S)
        {
-            val_print(PRINT_DEBUG, "[Check 1] PASSED\n", 0);
+            val_print(PRINT_ALWAYS, "[Check 1] PASSED\n", 0);
        }
    }
    return status;
@@ -386,7 +391,7 @@ val_status_t val_execute_secure_test_func(__attribute__((unused)) psa_handle_t *
     if (status_of_call != PSA_SUCCESS)
     {
     	status = VAL_STATUS_CALL_FAILED;
-        val_print(PRINT_ERROR, "Call to dispatch SF failed. Status=%x\n", status_of_call);
+        val_print(PRINT_ALWAYS, "Call to dispatch SF failed. Status=%x\n", status_of_call);
     }
     return status;
 #else
@@ -401,13 +406,13 @@ val_status_t val_execute_secure_test_func(__attribute__((unused)) psa_handle_t *
         if (status_of_call != PSA_SUCCESS)
         {
             status = VAL_STATUS_CALL_FAILED;
-            val_print(PRINT_ERROR, "Call to dispatch SF failed. Status=%x\n", status_of_call);
+            val_print(PRINT_ALWAYS, "Call to dispatch SF failed. Status=%x\n", status_of_call);
             psa_close(*handle);
         }
     }
     else
     {
-        val_print(PRINT_ERROR, "Could not connect SID. Handle=%x\n", *handle);
+        val_print(PRINT_ALWAYS, "Could not connect SID. Handle=%x\n", *handle);
         status = VAL_STATUS_CONNECTION_FAILED;
     }
 
@@ -582,6 +587,7 @@ void val_test_init(uint32_t test_num, char8_t *desc, uint32_t test_bitfield)
 #ifdef WATCHDOG_AVAILABLE
    /* Initialise watchdog */
    status = val_wd_timer_init(GET_WD_TIMOUT_TYPE(test_bitfield));
+    val_print(PRINT_ALWAYS, "\tval_wd_timer_init():%d\n", status);
    if (VAL_ERROR(status))
    {
        val_print(PRINT_ERROR, "\tval_wd_timer_init failed Error=0x%x\n", status);
@@ -590,6 +596,7 @@ void val_test_init(uint32_t test_num, char8_t *desc, uint32_t test_bitfield)
 
    /* Enable watchdog Timer */
    status = val_wd_timer_enable();
+    val_print(PRINT_ALWAYS, "\tval_wd_timer_enable():%d\n", status);
    if (VAL_ERROR(status))
    {
        val_print(PRINT_ERROR, "\tval_wd_timer_enable failed Error=0x%x\n", status);

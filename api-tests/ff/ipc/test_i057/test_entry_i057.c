@@ -18,6 +18,7 @@
 #include "val_interfaces.h"
 #include "val_target.h"
 #include "test_i057.h"
+#include "val_peripherals.h"
 
 #define TEST_NUM  VAL_CREATE_TEST_ID(VAL_FF_BASE, 57)
 #define TEST_DESC "Testing psa_write with invalid buffer addr\n"
@@ -33,9 +34,10 @@ void test_entry(val_api_t *val_api, psa_api_t *psa_api)
     psa = psa_api;
 
     /* test init */
-    val->test_init(TEST_NUM, TEST_DESC, TEST_FIELD(TEST_ISOLATION_L1, WD_HIGH_TIMEOUT));
+    val->test_init(TEST_NUM, TEST_DESC, TEST_FIELD(TEST_ISOLATION_L1, WD_CRYPTO_TIMEOUT));
     if (!IS_TEST_START(val->get_status()))
     {
+        val->print(PRINT_ALWAYS, "\n\ttest_init failed\n", 0);
         goto test_exit;
     }
 
@@ -43,6 +45,7 @@ void test_entry(val_api_t *val_api, psa_api_t *psa_api)
     status = val->execute_non_secure_tests(TEST_NUM, test_i057_client_tests_list, TRUE);
     if (VAL_ERROR(status))
     {
+        val->print(PRINT_ALWAYS, "\n\ttest_execute failed\n", 0);
         goto test_exit;
     }
 

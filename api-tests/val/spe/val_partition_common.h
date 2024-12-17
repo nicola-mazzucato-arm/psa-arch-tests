@@ -226,22 +226,26 @@ wait1:
     {
         if (psa_get(sig, msg) != PSA_SUCCESS)
         {
+            val_print(PRINT_ALWAYS, "\tpsa_get failed\n", 0);
             goto wait1;
         }
 
         if ((msg->type != PSA_IPC_CONNECT) || (msg->handle <= 0))
         {
-            val_print(PRINT_ERROR, "\tpsa_get failed for connect message\n", 0);
+            val_print(PRINT_ALWAYS, "\tpsa_get failed for connect message\n", 0);
+            val_print(PRINT_ALWAYS, "\ttype:%d\n", msg->type);
+            val_print(PRINT_ALWAYS, "\thandle:%d\n", msg->handle);
             res = VAL_STATUS_ERROR;
         }
         else
         {
+            val_print(PRINT_ALWAYS, "\tpsa_get ok for connect message\n", 0);
             res = VAL_STATUS_SUCCESS;
         }
     }
     else
     {
-        val_print(PRINT_ERROR, "\tpsa_wait returned with invalid signal value = 0x%x\n", signals);
+        val_print(PRINT_ALWAYS, "\tpsa_wait returned with invalid signal value = 0x%x\n", signals);
         res = VAL_STATUS_ERROR;
     }
     return res;
@@ -485,12 +489,12 @@ STATIC_DECLARE val_status_t val_err_check_set(uint32_t checkpoint, val_status_t 
 {
     if (VAL_ERROR(status))
     {
-        val_print(PRINT_ERROR, "\tCheckpoint %d : ", checkpoint);
-        val_print(PRINT_ERROR, "Error Code=0x%x \n", status);
+        val_print(PRINT_ALWAYS, "\tCheckpoint %d : ", checkpoint);
+        val_print(PRINT_ALWAYS, "Error Code=0x%x \n", status);
     }
     else
     {
-        val_print(PRINT_DEBUG, "\tCheckpoint %d \n", checkpoint);
+        val_print(PRINT_ALWAYS, "\tCheckpoint %d \n", checkpoint);
     }
     return status;
 }

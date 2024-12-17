@@ -79,6 +79,7 @@ int32_t client_test_psa_write_with_invalid_buffer_addr(caller_security_t caller 
        val->print(PRINT_ERROR, "\tConnection failed\n", 0);
        return VAL_STATUS_INVALID_HANDLE;
    }
+    val->print(PRINT_ALWAYS, "\tConnection succeeded\n", 0);
 
    psa_outvec outvec[1] = {{&data, sizeof(data)}};
 

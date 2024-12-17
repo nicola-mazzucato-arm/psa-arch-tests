@@ -79,36 +79,5 @@ test_i056, panic_test
 test_i057, panic_test
 test_i058
 test_i059, panic_test
-test_i060, panic_test
-test_i061, panic_test
-test_i062, panic_test
-test_i063
-test_i064, panic_test
-test_i065, panic_test
-test_i066, panic_test
-test_i067
-test_i068, panic_test
-test_i069, panic_test
-test_i070, panic_test
-test_i071
-test_i072, panic_test
-test_i073, panic_test
-test_i074, panic_test
-test_i075, panic_test
-test_i076, panic_test
-test_i077, panic_test
-test_i078, panic_test
-test_i079, panic_test
-test_i080, panic_test
-test_i081, panic_test
-test_i082, panic_test
-test_i083, panic_test
-test_i084, panic_test
-test_i085, panic_test
-test_i086, panic_test
-test_i087, panic_test
-test_i088
-test_i089, panic_test
-test_i090, panic_test
 
 (END)

@@ -187,11 +187,16 @@ void driver_main(void)
 
                     if (nvmem_param.nvmem_fn_type == NVMEM_READ)
                     {
+                        val_print_sf("val_nvmem_read_sf: ", 0);
                         fn_status = val_nvmem_read_sf(nvmem_param.base,
                                                       nvmem_param.offset,
                                                       buffer,
                                                       nvmem_param.size);
+                        val_print_sf("base:%d ", nvmem_param.base);
+                        val_print_sf("offset:%d ", nvmem_param.offset);
+                        val_print_sf("size:%d\n", nvmem_param.size);
                         psa_write(msg.handle, 0, (const void*) buffer, msg.out_size[0]);
+                        val_print_sf("psa_write\n", 0);
                     }
                     else
                     {
@@ -203,11 +208,16 @@ void driver_main(void)
                         }
                         else
                         {
+                            val_print_sf("psa_read\n", 0);
                             psa_read(msg.handle, 1, (void*) buffer, msg.in_size[1]);
+                            val_print_sf("val_nvmem_write_sf: ", 0);
                             fn_status = val_nvmem_write_sf(nvmem_param.base,
                                                            nvmem_param.offset,
                                                            buffer,
                                                            nvmem_param.size);
+                            val_print_sf("base:%d ", nvmem_param.base);
+                            val_print_sf("offset:%d ", nvmem_param.offset);
+                            val_print_sf("size:%d\n", nvmem_param.size);
                         }
                     }
                     if (fn_status == VAL_STATUS_SUCCESS)

@@ -200,11 +200,14 @@ int32_t val_dispatcher(test_id_t test_id_prev)
 
     do
     {
+        val_print(PRINT_ALWAYS, "\n\ttest_id_prev: %d", test_id_prev);
         status = val_get_boot_flag(&boot.state);
         if (VAL_ERROR(status))
         {
             return status;
         }
+        val_print(PRINT_ALWAYS, "\n\tval_get_boot_flag(): %d", status);
+        val_print(PRINT_ALWAYS, "\n\tboot.state: %d", boot.state);
 
         /* Did last run test hang and system re-booted due to watchdog timeout and
            boot.state was set to BOOT_NOT_EXPECTED ? If yes, set the test status
@@ -239,6 +242,8 @@ int32_t val_dispatcher(test_id_t test_id_prev)
         else
         {
             status = val_test_load(&test_id, test_id_prev);
+            val_print(PRINT_ALWAYS, "\n\tval_test_load(): %d", status);
+            val_print(PRINT_ALWAYS, "\n\ttest_id: %d", test_id);
 
             if (VAL_ERROR(status))
             {
@@ -251,6 +256,7 @@ int32_t val_dispatcher(test_id_t test_id_prev)
 
             status = val_nvmem_write(VAL_NVMEM_OFFSET(NV_TEST_ID_CURRENT),
                                      &test_id, sizeof(test_id_t));
+            val_print(PRINT_ALWAYS, "\n\tval_nvmem_write()", 0);
             if (VAL_ERROR(status))
             {
                 val_print(PRINT_ERROR, "\n\tNVMEM write error", 0);
@@ -275,9 +281,11 @@ build. For PSA functional API certification, all tests must be run.\n", 0);
                 status = val_set_boot_flag(BOOT_NOT_EXPECTED);
                 if (VAL_ERROR(status))
                 {
+                    val_print(PRINT_ERROR, "\n\tBOOT_NOT_EXPECTED failed", 0);
                     return status;
                 }
             }
+            val_print(PRINT_ALWAYS, "\n\tval_execute_test_fn()", 0);
             val_execute_test_fn();
         }
 
@@ -287,6 +295,7 @@ build. For PSA functional API certification, all tests must be run.\n", 0);
         status = val_set_boot_flag(BOOT_UNKNOWN);
         if (VAL_ERROR(status))
         {
+            val_print(PRINT_ERROR, "\n\tBOOT_UNKNOWN set failed", 0);
             return status;
         }
 

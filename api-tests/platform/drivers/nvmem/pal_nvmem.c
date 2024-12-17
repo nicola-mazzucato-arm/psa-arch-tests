@@ -16,6 +16,7 @@
 **/
 
 #include "pal_nvmem.h"
+#include "val_driver_service_apis.h"
 
 /**
     @brief    - Writes into given non-volatile address.
@@ -33,11 +34,14 @@ int nvmem_write(addr_t base, uint32_t offset, void *buffer, int size)
         return 0;
     }
 
+    val_print_sf("wr: ", 0);
     for (b_cnt = 0; b_cnt < size; b_cnt++)
     {
         /* If flash interface just emulated over SRAM, use simple memory write */
         *(uint8_t *)(base + offset + b_cnt) = *((uint8_t *)buffer + b_cnt);
+        val_print_sf("%d ", *((uint8_t *)buffer + b_cnt));
     }
+    val_print_sf("\n", 0);
 
     return 1;
 }
@@ -58,11 +62,14 @@ int nvmem_read(addr_t base, uint32_t offset, void *buffer, int size)
         return 0;
     }
 
+    val_print_sf("rd: ", 0);
     for (b_cnt = 0; b_cnt < size; b_cnt++)
     {
         /* If flash interface just emulated over SRAM, use simple memory read */
         *((uint8_t *)buffer + b_cnt) = *(uint8_t *)(base + offset + b_cnt);
+        val_print_sf("%d ", *(uint8_t *)(base + offset + b_cnt));
     }
+    val_print_sf("\n", 0);
 
     return 1;
 }
