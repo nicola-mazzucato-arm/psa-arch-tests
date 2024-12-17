@@ -33,7 +33,7 @@ typedef uint32_t            cfg_id_t;
 
 /* Print verbosity = TEST */
 #ifndef VERBOSE
-#define VERBOSE 9
+#define VERBOSE 1
 #endif
 
 #ifndef __WEAK
